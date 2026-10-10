@@ -361,14 +361,13 @@ def index(folder: Path, timings: bool = False, include_tests: bool = False):
 
     try:
         save_registry(registry)
-    except (OSError, TypeError) as e:
+    except (OSError, TypeError, ValueError) as e:
         error_console.print(
             f"[b red]Error: [/b red]Indexes were built but could not be registered: {escape(str(e))}\n"
             f"Run 'codesearch reindex {escape(str(folder))}' again to rebuild."
         )
         raise typer.Exit(code=1)
 
-    console.print()
     console.print(f"[b green]Success: [/b green]Indexed and saved [cyan]{len(functions)}[/cyan] functions from {escape(str(folder))}.")
 
 
@@ -402,6 +401,16 @@ def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
     if timings:
         console.print(f"[dim]Parsing took [cyan]{tp1 - tp0:.2f}[/cyan] seconds.[/dim]")
 
+    if project_hash in registry:
+        del registry[project_hash]
+    try:
+        save_registry(registry)
+        (BM25_DIR / f"{project_hash}.pkl").unlink(missing_ok=True)
+        (GRAPH_DIR / f"{project_hash}.pkl").unlink(missing_ok=True)
+    except Exception as e:
+        error_console.print(f"[b red]Error: [/b red]Could not clear the old index: {escape(str(e))}")
+        raise typer.Exit(code=1)
+
     try:
         console.print()
         with console.status("Building BM25, Vector, and Graph indexes...", spinner="arc"):
@@ -434,7 +443,7 @@ def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
         bm25_index.save(BM25_DIR / f"{project_hash}.pkl")
         graph_index.save(GRAPH_DIR / f"{project_hash}.pkl")
     except Exception as e:
-        error_console.print(f"[b red]Error: [/b red]Failed to build indexes: {escape(str(e))}")
+        error_console.print(f"[b red]Error: [/b red]Failed to rebuild indexes: {escape(str(e))}")
         raise typer.Exit(code=1)
 
     file_mtimes = get_file_mtimes(folder, include_tests)
@@ -448,7 +457,7 @@ def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
 
     try:
         save_registry(registry)
-    except (OSError, TypeError) as e:
+    except (OSError, TypeError, ValueError) as e:
         error_console.print(
             f"[b red]Error: [/b red]Indexes were built but could not be registered: {escape(str(e))}\n"
             f"Run 'codesearch reindex {escape(str(folder))}' again to rebuild."
@@ -601,7 +610,7 @@ def clear(folder: Path | None = None, all_items: bool = False):
 
     try:
         save_registry(registry)
-    except (OSError, TypeError) as e:
+    except (OSError, TypeError, ValueError) as e:
         error_console.print(
             f"[b red]Error: [/b red]Indexes were cleared but failed to update registry: {escape(str(e))}")
         raise typer.Exit(code=1)

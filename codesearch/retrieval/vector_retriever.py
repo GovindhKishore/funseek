@@ -16,12 +16,16 @@ class VectorRetriever:
             n_results=top_k,
         )
 
-        distances = results["distances"][0]
         ids = results["ids"][0]
+        if not ids:
+            raise RuntimeError(
+                "Vector index returned no results. It may be empty or damaged; run 'codesearch reindex'.")
+        distances = results["distances"][0]
         metadatas = results["metadatas"][0]
 
+
         scored_functions = []
-        MIN_KEEP = 10
+        MIN_KEEP = 3
 
         for rank, (dist, doc_id, meta) in enumerate(zip(distances, ids, metadatas), start=1):
             similarity = 1 - dist
