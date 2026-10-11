@@ -1,6 +1,6 @@
 from codesearch.providers.base import BaseProvider
 
-OLLAMA_MODEL = "llama3"
+OLLAMA_MODEL = "llama3.2:1b"
 
 class OllamaProvider(BaseProvider):
     def __init__(self, model_name: str = OLLAMA_MODEL):
