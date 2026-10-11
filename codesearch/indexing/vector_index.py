@@ -93,7 +93,6 @@ class VectorIndex:
         except NotFoundError as e:
             raise ValueError(
                 f"No collection named '{collection_name}' found at: {persist_path}"
-                f"Try running 'codesearch reindex' to fix."
             ) from e
 
 

@@ -150,7 +150,8 @@ def get_indexes(folder: Path, no_index: bool, include_tests: bool, timings: bool
                 tg1 = time.perf_counter()
 
         except Exception as e:
-            error_console.print(f"[b red]Error:[/b red] Failed to load indexes: {escape(str(e))}. Run 'codesearch reindex <folder>' to rebuild.")
+            detail = str(e) or type(e).__name__
+            error_console.print(f"[b red]Error:[/b red] Failed to load indexes: {escape(detail)}. Run 'codesearch reindex <folder>' to rebuild.")
             raise typer.Exit(code=1)
 
 
@@ -243,6 +244,7 @@ def search_helper(bm25_retriever: "BM25Retriever",
         if tvs1 != 0.0:
             console.print(f"[dim]Vector search took [cyan]{tvs1 - tvs0:.2f}[/cyan] seconds.[/dim]")
         console.print(f"[dim]Graph search took [cyan]{tgs1 - tgs0:.2f}[/cyan] seconds.[/dim]")
+        console.print()
 
     fused_results = fuser.fuse(bm25_results, vector_results, graph_results[:10])
     rerank_candidates = fused_results[:num_rerank_candids]
@@ -252,7 +254,6 @@ def search_helper(bm25_retriever: "BM25Retriever",
 
 def rerank_results(query: str, candidates: list[ScoredFunction], reranker: Reranker, skip_reason: str, top_n: int, timings: bool) -> list[ScoredFunction]:
     if reranker is None:
-        console.print()
         error_console.print(f"[bold yellow]Warning: [/bold yellow]{skip_reason} Skipping reranking, showing fused results.")
         return candidates[:top_n]
 
@@ -261,7 +262,7 @@ def rerank_results(query: str, candidates: list[ScoredFunction], reranker: Reran
         final = reranker.rerank(query, candidates)
     tr1 = time.perf_counter()
 
-    if timings:
+    if timings and final[0].retriever == "reranked":
         console.print(f"[dim]Reranking took [cyan]{tr1 - tr0:.2f}[/cyan] seconds.[/dim]")
     return final
 
@@ -283,6 +284,9 @@ app = typer.Typer()
 @app.command()
 def index(folder: Path, timings: bool = False, include_tests: bool = False):
     folder = folder.resolve()
+    if not folder.is_dir():
+        error_console.print(f"[b red]Error: [/b red]Not an existing folder: {escape(str(folder))}")
+        raise typer.Exit(code=1)
     project_hash = compute_project_hash(folder)
 
     registry = safe_load_registry_index_cmds()
@@ -344,6 +348,7 @@ def index(folder: Path, timings: bool = False, include_tests: bool = False):
             console.print(f"[dim]BM25 index built in [cyan]{tb1 - tb0:.2f}[/cyan] seconds.[/dim]")
             console.print(f"[dim]Vector index built in [cyan]{tv1 - tv0:.2f}[/cyan] seconds.[/dim]")
             console.print(f"[dim]Graph index built in [cyan]{tg1 - tg0:.2f}[/cyan] seconds.[/dim]")
+            console.print()
 
         bm25_index.save(BM25_DIR / f"{project_hash}.pkl")
         graph_index.save(GRAPH_DIR / f"{project_hash}.pkl")
@@ -374,6 +379,9 @@ def index(folder: Path, timings: bool = False, include_tests: bool = False):
 @app.command()
 def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
     folder = folder.resolve()
+    if not folder.is_dir():
+        error_console.print(f"[b red]Error: [/b red]Not an existing folder: {escape(str(folder))}")
+        raise typer.Exit(code=1)
     project_hash = compute_project_hash(folder)
 
     registry = safe_load_registry_index_cmds()
@@ -393,6 +401,7 @@ def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
         )
 
     if not functions:
+        console.print()
         error_console.print(f"[bold yellow]Warning: [/bold yellow]No functions found in {escape(str(folder))}. Nothing to index.")
         raise typer.Exit(code=1)
 
@@ -439,6 +448,7 @@ def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
             console.print(f"[dim]BM25 index built in [cyan]{tb1 - tb0:.2f}[/cyan] seconds.[/dim]")
             console.print(f"[dim]Vector index built in [cyan]{tv1 - tv0:.2f}[/cyan] seconds.[/dim]")
             console.print(f"[dim]Graph index built in [cyan]{tg1 - tg0:.2f}[/cyan] seconds.[/dim]")
+            console.print()
 
         bm25_index.save(BM25_DIR / f"{project_hash}.pkl")
         graph_index.save(GRAPH_DIR / f"{project_hash}.pkl")
@@ -464,7 +474,6 @@ def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
         )
         raise typer.Exit(code=1)
 
-    console.print()
     console.print(f"[b green]Success: [/b green]Indexed and saved [cyan]{len(functions)}[/cyan] functions from {escape(str(folder))}.")
 
 
@@ -485,15 +494,18 @@ def search(
         include_tests: bool = False
     ):
     folder = folder.resolve()
+    if not folder.is_dir():
+        error_console.print(f"[b red]Error: [/b red]Not an existing folder: {escape(str(folder))}")
+        raise typer.Exit(code=1)
 
     bm25_index, vector_index, graph_index, blt, vlt, glt = get_indexes(folder, no_index=no_index, include_tests=include_tests, timings=timings)
 
     if timings:
         action = "build" if no_index else "load"
-        console.print()
         console.print(f"[dim]BM25 index {action} took [cyan]{blt:.2f}[/cyan] seconds.[/dim]")
         console.print(f"[dim]Vector index {action} took [cyan]{vlt:.2f}[/cyan] seconds.[/dim]")
         console.print(f"[dim]Graph index {action} took [cyan]{glt:.2f}[/cyan] seconds.[/dim]")
+        console.print()
 
     from codesearch.retrieval.bm25_retriever import BM25Retriever
     from codesearch.retrieval.vector_retriever import VectorRetriever
@@ -513,19 +525,20 @@ def search(
     if provider is None:
         skip_reason = "No provider specified."
     elif provider == "gemini":
-        from codesearch import config
+        with console.status("Setting up provider...", spinner="arc"):
+            from codesearch import config
 
-        api_key = config.get_api_key("gemini")
-        if api_key is None:
-            skip_reason = "No Gemini API key found."
-        else:
-            reranker = Reranker(provider=GeminiProvider(api_key=api_key), top_n=top_n)
+            api_key = config.get_api_key("gemini")
+            if api_key is None:
+                skip_reason = "No Gemini API key found."
+            else:
+                reranker = Reranker(provider=GeminiProvider(api_key=api_key), top_n=top_n)
     elif provider == "ollama":
         reranker = Reranker(provider=OllamaProvider(), top_n=top_n)
     else:
         skip_reason = f"Unknown provider: {escape(str(provider))}."
 
-    console.print()
+
     while True:
         try:
             query = typer.prompt("Query").strip()
