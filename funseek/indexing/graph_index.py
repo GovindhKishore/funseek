@@ -2,7 +2,7 @@ from pathlib import Path
 from dataclasses import dataclass
 import pickle
 import networkx as nx
-from codesearch.parsing.parser import FunctionInfo
+from funseek.parsing.parser import FunctionInfo
 from collections import Counter
 
 @dataclass

@@ -7,18 +7,18 @@ import os
 from rich.console import Console
 from rich.markup import escape
 
-from codesearch.parsing.parser import CodebaseParser
-from codesearch.retrieval.types import ScoredFunction
-from codesearch.pipeline.fusion import Fuser
-from codesearch.pipeline.reranker import Reranker
-from codesearch.providers.gemini import GeminiProvider
-from codesearch.providers.ollama import OllamaProvider
+from funseek.parsing.parser import CodebaseParser
+from funseek.retrieval.types import ScoredFunction
+from funseek.pipeline.fusion import Fuser
+from funseek.pipeline.reranker import Reranker
+from funseek.providers.gemini import GeminiProvider
+from funseek.providers.ollama import OllamaProvider
 
 
-REGISTRY_PATH = Path.home() / ".codesearch" / "registry.json"
-BM25_DIR = Path.home() / ".codesearch" / "bm25"
-GRAPH_DIR = Path.home() / ".codesearch" / "graphs"
-CHROMA_DIR = Path.home() / ".codesearch" / "chroma"
+REGISTRY_PATH = Path.home() / ".funseek" / "registry.json"
+BM25_DIR = Path.home() / ".funseek" / "bm25"
+GRAPH_DIR = Path.home() / ".funseek" / "graphs"
+CHROMA_DIR = Path.home() / ".funseek" / "chroma"
 
 VALID_KEY_PROVIDERS = {"gemini"}
 
@@ -107,12 +107,12 @@ def get_indexes(folder: Path, no_index: bool, include_tests: bool, timings: bool
         except CorruptedRegistryError:
             error_console.print(
                 f"[b red]Error: [/b red]The registry is corrupted, so {escape(str(folder))} cannot be looked up. "
-                f"Run 'codesearch reindex {escape(str(folder))}' to fix it."
+                f"Run 'fun reindex {escape(str(folder))}' to fix it."
             )
             raise typer.Exit(code=1)
 
         if project_hash not in registry:
-            error_console.print(f"[bold yellow]Warning: [/bold yellow]{escape(str(folder))} is not indexed. Run 'codesearch index {escape(str(folder))}' first.")
+            error_console.print(f"[bold yellow]Warning: [/bold yellow]{escape(str(folder))} is not indexed. Run 'fun index {escape(str(folder))}' first.")
             raise typer.Exit(code=1)
 
         indexed_project = registry[project_hash]
@@ -123,15 +123,15 @@ def get_indexes(folder: Path, no_index: bool, include_tests: bool, timings: bool
             error_console.print(f"[bold yellow]Warning: [/bold yellow]Files in {escape(str(folder))} have changed since last index.")
             proceed = typer.confirm("Search anyway with the existing index?", default=True)
             if not proceed:
-                console.print(f"Run 'codesearch reindex {escape(str(folder))}' to update.")
+                console.print(f"Run 'fun reindex {escape(str(folder))}' to update.")
                 raise typer.Exit(code=0)
 
         try:
             console.print()
             with console.status("Fetching indexes...", spinner="arc"):
-                from codesearch.indexing.bm25_index import BM25Index
-                from codesearch.indexing.vector_index import VectorIndex
-                from codesearch.indexing.graph_index import GraphIndex
+                from funseek.indexing.bm25_index import BM25Index
+                from funseek.indexing.vector_index import VectorIndex
+                from funseek.indexing.graph_index import GraphIndex
 
                 tb0 = time.perf_counter()
                 bm25_index = BM25Index.load(BM25_DIR / f"{project_hash}.pkl")
@@ -151,7 +151,7 @@ def get_indexes(folder: Path, no_index: bool, include_tests: bool, timings: bool
 
         except Exception as e:
             detail = str(e) or type(e).__name__
-            error_console.print(f"[b red]Error:[/b red] Failed to load indexes: {escape(detail)}. Run 'codesearch reindex <folder>' to rebuild.")
+            error_console.print(f"[b red]Error:[/b red] Failed to load indexes: {escape(detail)}. Run 'fun reindex <folder>' to rebuild.")
             raise typer.Exit(code=1)
 
 
@@ -185,9 +185,9 @@ def get_indexes(folder: Path, no_index: bool, include_tests: bool, timings: bool
         try:
             console.print()
             with console.status("Building indexes...", spinner="arc"):
-                from codesearch.indexing.bm25_index import BM25Index
-                from codesearch.indexing.vector_index import VectorIndex
-                from codesearch.indexing.graph_index import GraphIndex
+                from funseek.indexing.bm25_index import BM25Index
+                from funseek.indexing.vector_index import VectorIndex
+                from funseek.indexing.graph_index import GraphIndex
 
                 ttb0 = time.perf_counter()
                 bm25_index = BM25Index.build(functions)
@@ -293,7 +293,7 @@ def index(folder: Path, timings: bool = False, include_tests: bool = False):
 
     if project_hash in registry:
         test_status = "test files" if registry[project_hash]["include_tests"] else "no test files"
-        console.print(f"Already indexed (with {test_status}): {escape(str(folder))}. Run 'codesearch reindex' to rebuild.")
+        console.print(f"Already indexed (with {test_status}): {escape(str(folder))}. Run 'fun reindex' to rebuild.")
         raise typer.Exit(code=0)
 
     parser = CodebaseParser(include_tests=include_tests)
@@ -323,9 +323,9 @@ def index(folder: Path, timings: bool = False, include_tests: bool = False):
     try:
         console.print()
         with console.status("Building BM25, Vector, and Graph indexes...", spinner="arc"):
-            from codesearch.indexing.bm25_index import BM25Index
-            from codesearch.indexing.vector_index import VectorIndex
-            from codesearch.indexing.graph_index import GraphIndex
+            from funseek.indexing.bm25_index import BM25Index
+            from funseek.indexing.vector_index import VectorIndex
+            from funseek.indexing.graph_index import GraphIndex
 
             tb0 = time.perf_counter()
             bm25_index = BM25Index.build(functions)
@@ -369,7 +369,7 @@ def index(folder: Path, timings: bool = False, include_tests: bool = False):
     except (OSError, TypeError, ValueError) as e:
         error_console.print(
             f"[b red]Error: [/b red]Indexes were built but could not be registered: {escape(str(e))}\n"
-            f"Run 'codesearch reindex {escape(str(folder))}' again to rebuild."
+            f"Run 'fun reindex {escape(str(folder))}' again to rebuild."
         )
         raise typer.Exit(code=1)
 
@@ -423,9 +423,9 @@ def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
     try:
         console.print()
         with console.status("Building BM25, Vector, and Graph indexes...", spinner="arc"):
-            from codesearch.indexing.bm25_index import BM25Index
-            from codesearch.indexing.vector_index import VectorIndex
-            from codesearch.indexing.graph_index import GraphIndex
+            from funseek.indexing.bm25_index import BM25Index
+            from funseek.indexing.vector_index import VectorIndex
+            from funseek.indexing.graph_index import GraphIndex
 
             tb0 = time.perf_counter()
             bm25_index = BM25Index.build(functions)
@@ -470,7 +470,7 @@ def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
     except (OSError, TypeError, ValueError) as e:
         error_console.print(
             f"[b red]Error: [/b red]Indexes were built but could not be registered: {escape(str(e))}\n"
-            f"Run 'codesearch reindex {escape(str(folder))}' again to rebuild."
+            f"Run 'fun reindex {escape(str(folder))}' again to rebuild."
         )
         raise typer.Exit(code=1)
 
@@ -508,9 +508,9 @@ def search(
         console.print(f"[dim]Graph index {action} took [cyan]{glt:.2f}[/cyan] seconds.[/dim]")
         console.print()
 
-    from codesearch.retrieval.bm25_retriever import BM25Retriever
-    from codesearch.retrieval.vector_retriever import VectorRetriever
-    from codesearch.retrieval.graph_retriever import GraphRetriever
+    from funseek.retrieval.bm25_retriever import BM25Retriever
+    from funseek.retrieval.vector_retriever import VectorRetriever
+    from funseek.retrieval.graph_retriever import GraphRetriever
 
     bm25_retriever = BM25Retriever(bm25_index)
     vector_retriever = VectorRetriever(vector_index)
@@ -527,7 +527,7 @@ def search(
         skip_reason = "No provider specified."
     elif provider == "gemini":
         with console.status("Setting up provider...", spinner="arc"):
-            from codesearch import config
+            from funseek import config
 
             api_key = config.get_api_key("gemini")
             if api_key is None:
@@ -599,7 +599,7 @@ def clear(folder: Path | None = None, all_items: bool = False):
 
     console.print()
     with console.status("Clearing...", spinner="arc"):
-        from codesearch.indexing.vector_index import VectorIndex
+        from funseek.indexing.vector_index import VectorIndex
 
         try:
             (BM25_DIR / f"{project_hash}.pkl").unlink(missing_ok=True)
@@ -634,7 +634,7 @@ def clear(folder: Path | None = None, all_items: bool = False):
 
 @app.command()
 def set_api_key(provider: str, api_key: str):
-    from codesearch import config
+    from funseek import config
 
     if provider not in VALID_KEY_PROVIDERS:
         error_console.print(f"[b red]Error: [/b red]Unknown provider: {escape(str(provider))}. Valid options: {', '.join(VALID_KEY_PROVIDERS)}")
@@ -649,7 +649,7 @@ def set_api_key(provider: str, api_key: str):
 
 @app.command()
 def get_api_key(provider: str):
-    from codesearch import config
+    from funseek import config
 
     if provider not in VALID_KEY_PROVIDERS:
         error_console.print(f"[b red]Error: [/b red]Unknown provider: {escape(str(provider))}. Valid providers: {', '.join(VALID_KEY_PROVIDERS)}")
@@ -657,7 +657,7 @@ def get_api_key(provider: str):
 
     api_key = config.get_api_key(provider)
     if api_key is None:
-        error_console.print(f"No API key configured for {escape(str(provider))}. Run `codesearch set-api-key {provider} <key>` to set it.")
+        error_console.print(f"No API key configured for {escape(str(provider))}. Run `fun set-api-key {provider} <key>` to set it.")
     else:
         masked = "..." + api_key[-4: ] if len(api_key) > 8 else "..."
         console.print(f"[b green]Success: [/b green]{escape(str(provider))} API key Found: {masked}")
@@ -665,7 +665,7 @@ def get_api_key(provider: str):
 
 @app.command()
 def clear_api_key(provider: str):
-    from codesearch import config
+    from funseek import config
 
     if provider not in VALID_KEY_PROVIDERS:
         error_console.print(f"[b red]Error: [/b red]Unknown provider: {escape(str(provider))}. Valid providers: {escape(', '.join(VALID_KEY_PROVIDERS))}")

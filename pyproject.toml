@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "codesearch"
+name = "funseek"
 version = "0.1.0"
 description = "Hybrid lexical + semantic + structural code search CLI"
 requires-python = ">=3.10"
@@ -19,4 +19,4 @@ dependencies = [
 ]
 
 [project.scripts]
-codesearch = "codesearch.cli:app"
+fun = "funseek.cli:app"

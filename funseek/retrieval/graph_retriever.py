@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
-from codesearch.retrieval.types import ScoredFunction
 from pathlib import Path
-from codesearch.parsing.parser import FunctionInfo
 import networkx as nx
+from funseek.retrieval.types import ScoredFunction
+from funseek.parsing.parser import FunctionInfo
 
 
 

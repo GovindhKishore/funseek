@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from codesearch.parsing.parser import FunctionInfo
-from codesearch.retrieval.types import ScoredFunction
 from pathlib import Path
+from funseek.parsing.parser import FunctionInfo
+from funseek.retrieval.types import ScoredFunction
 
 
 @dataclass
@@ -19,7 +19,7 @@ class VectorRetriever:
         ids = results["ids"][0]
         if not ids:
             raise RuntimeError(
-                "Vector index returned no results. It may be empty or damaged; run 'codesearch reindex'.")
+                "Vector index returned no results. It may be empty or damaged; run 'funseek reindex'.")
         distances = results["distances"][0]
         metadatas = results["metadatas"][0]
 

@@ -1,4 +1,4 @@
-from codesearch.providers.base import BaseProvider
+from funseek.providers.base import BaseProvider
 
 OLLAMA_MODEL = "llama3.2:1b"
 

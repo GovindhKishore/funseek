@@ -1,5 +1,5 @@
-from codesearch.parsing.parser import FunctionInfo
-from codesearch.retrieval.types import ScoredFunction
+from funseek.parsing.parser import FunctionInfo
+from funseek.retrieval.types import ScoredFunction
 from dataclasses import dataclass
 
 @dataclass

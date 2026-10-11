@@ -1,6 +1,6 @@
 import keyring
 
-SERVICE_NAME = "codesearch"
+SERVICE_NAME = "funseek"
 
 def get_api_key(provider: str) -> str | None:
     try:

@@ -2,11 +2,11 @@ import json
 from pathlib import Path
 import math
 
-from codesearch.cli import get_indexes
-from codesearch.retrieval.bm25_retriever import BM25Retriever
-from codesearch.retrieval.vector_retriever import VectorRetriever
-from codesearch.retrieval.graph_retriever import GraphRetriever
-from codesearch.pipeline.fusion import Fuser
+from funseek.cli import get_indexes
+from funseek.retrieval.bm25_retriever import BM25Retriever
+from funseek.retrieval.vector_retriever import VectorRetriever
+from funseek.retrieval.graph_retriever import GraphRetriever
+from funseek.pipeline.fusion import Fuser
 import typer
 
 
@@ -34,7 +34,7 @@ def setup() -> tuple[BM25Retriever, VectorRetriever, GraphRetriever]:
     except typer.Exit as e:
         if e.exit_code == 0:
             raise RuntimeError("Evaluation cancelled")
-        raise RuntimeError(f"{TARGET_FOLDER} is not indexed. Run 'codesearch index {TARGET_FOLDER}' first.")
+        raise RuntimeError(f"{TARGET_FOLDER} is not indexed. Run 'fun index {TARGET_FOLDER}' first.")
 
     bm25_retriever = BM25Retriever(bm25_index)
     vector_retriever = VectorRetriever(vector_index)

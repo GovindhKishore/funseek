@@ -5,7 +5,7 @@ import chromadb
 from chromadb.api.models.Collection import Collection
 from chromadb.errors import NotFoundError
 
-from codesearch.parsing.parser import FunctionInfo
+from funseek.parsing.parser import FunctionInfo
 
 DEFAULT_MODEL_NAME = "all-MiniLM-L6-v2"
 CHROMA_BATCH_SIZE = 4000

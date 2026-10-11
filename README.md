@@ -42,7 +42,7 @@ Each retriever's weight is independently tunable (`--bm25-weight`, `--vector-wei
 
 ```bash
 git clone https://github.com/GovindhKishore/codesearch.git
-cd codesearch
+cd funseek
 pip install -e .
 ```
 
@@ -54,29 +54,29 @@ Requires Python 3.10+.
 
 ```bash
 # Index a codebase (builds BM25, vector, and call graph indexes)
-codesearch index /path/to/your/project
+funseek index /path/to/your/project
 
 # Search it
-codesearch search "functions that handle HTTP request validation" /path/to/your/project
+funseek search "functions that handle HTTP request validation" /path/to/your/project
 
 # Tune retrieval weights for jargon-heavy or framework-style codebases
-codesearch search "parse incoming payload" /path/to/your/project \
+funseek search "parse incoming payload" /path/to/your/project \
     --vector-weight 1.5 --structural-weight 0.0
 
 # Use a local LLM for reranking (no data leaves your machine)
-codesearch search "authenticate user token" /path/to/your/project --provider ollama
+funseek search "authenticate user token" /path/to/your/project --provider ollama
 
 # Force a full rebuild
-codesearch reindex /path/to/your/project
+funseek reindex /path/to/your/project
 
 # Clear indexes
-codesearch clear /path/to/your/project
+funseek clear /path/to/your/project
 ```
 
 ### API key setup (for Gemini reranking)
 
 ```bash
-codesearch set-api-key gemini
+funseek set-api-key gemini
 ```
 
 Keys are stored in your OS's native credential store (Windows Credential Manager, macOS Keychain, Linux Secret Service) - never in plaintext files.

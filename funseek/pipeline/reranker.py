@@ -3,8 +3,8 @@ import random
 from pathlib import Path
 import ast
 
-from codesearch.providers.base import BaseProvider
-from codesearch.retrieval.types import ScoredFunction
+from funseek.providers.base import BaseProvider
+from funseek.retrieval.types import ScoredFunction
 
 def extract_function_source(file: Path, line: int) -> str | None:
     try:

@@ -4,7 +4,7 @@ import pickle
 from pathlib import Path
 
 from rank_bm25 import BM25Okapi
-from codesearch.parsing.parser import FunctionInfo
+from funseek.parsing.parser import FunctionInfo
 
 STOPWORDS = {
     "a", "an", "the", "is", "are", "was", "were", "be", "been", "being",

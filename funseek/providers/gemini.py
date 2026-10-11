@@ -1,4 +1,4 @@
-from codesearch.providers.base import BaseProvider
+from funseek.providers.base import BaseProvider
 
 GEMINI_MODEL = "gemini-3.1-flash-lite"
 
