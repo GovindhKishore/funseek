@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from pathlib import Path
 import networkx as nx
+
 from funseek.retrieval.types import ScoredFunction
 from funseek.parsing.parser import FunctionInfo
 

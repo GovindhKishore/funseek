@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from funseek.indexing.bm25_index import tokenize
 from funseek.retrieval.types import ScoredFunction
 from funseek.parsing.parser import FunctionInfo

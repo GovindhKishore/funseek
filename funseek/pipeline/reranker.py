@@ -95,10 +95,6 @@ class Reranker:
         return matched[: self.top_n]
 
 
-
-
-
-
     def _build_prompt(self, query: str, candidates: list[ScoredFunction]) -> str:
         shuffled = candidates.copy()
         random.shuffle(shuffled)

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from funseek.parsing.parser import FunctionInfo
 
 @dataclass
