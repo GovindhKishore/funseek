@@ -488,6 +488,7 @@ def search(
         max_hop: int = 1,
         decay_factor: float = 0.5,
         provider: str | None = None,
+        model: str | None = None,
         top_n: int = 10,
         num_rerank_candids: int = 20,
         timings: bool = False,
@@ -532,9 +533,9 @@ def search(
             if api_key is None:
                 skip_reason = "No Gemini API key found."
             else:
-                reranker = Reranker(provider=GeminiProvider(api_key=api_key), top_n=top_n)
+                reranker = Reranker(provider=GeminiProvider(api_key=api_key, model_name=model), top_n=top_n)
     elif provider == "ollama":
-        reranker = Reranker(provider=OllamaProvider(), top_n=top_n)
+        reranker = Reranker(provider=OllamaProvider(model_name=model), top_n=top_n)
     else:
         skip_reason = f"Unknown provider: {escape(str(provider))}."
 

@@ -4,11 +4,11 @@ GEMINI_MODEL = "gemini-3.1-flash-lite"
 
 
 class GeminiProvider(BaseProvider):
-    def __init__(self, api_key: str, model_name: str = GEMINI_MODEL):
+    def __init__(self, api_key: str, model_name: str | None = None):
         from google import genai
 
         self.client = genai.Client(api_key=api_key)
-        self.model_name = model_name
+        self.model_name = model_name if model_name else GEMINI_MODEL
 
     def generate(self, prompt: str) -> str | None:
         from google.genai import types

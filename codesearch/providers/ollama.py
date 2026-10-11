@@ -3,10 +3,10 @@ from codesearch.providers.base import BaseProvider
 OLLAMA_MODEL = "llama3.2:1b"
 
 class OllamaProvider(BaseProvider):
-    def __init__(self, model_name: str = OLLAMA_MODEL):
+    def __init__(self, model_name: str | None = None):
         import ollama
 
-        self.model_name = model_name
+        self.model_name = model_name if model_name else OLLAMA_MODEL
         self.client = ollama.Client()
 
     def generate(self, prompt: str) -> str | None:
