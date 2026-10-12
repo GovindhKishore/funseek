@@ -11,7 +11,7 @@ import typer
 
 
 EVAL_DIR = Path(__file__).parent
-TARGET_FOLDER = Path(r"C:\Users\govin\PycharmProjects\codesearch\eval\sklearn-eval-core")
+TARGET_FOLDER = Path(r"C:\Users\govin\PycharmProjects\funseek\eval\sklearn-eval-core")
 QUERIES_PATH = EVAL_DIR / "new_set_queries_hcse_eval.json"
 
 
