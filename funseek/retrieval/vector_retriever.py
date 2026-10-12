@@ -20,7 +20,8 @@ class VectorRetriever:
         ids = results["ids"][0]
         if not ids:
             raise RuntimeError(
-                "Vector index returned no results. It may be empty or damaged; run 'funseek reindex'.")
+                "Vector index returned no results. It may be empty or damaged; run 'funseek reindex'."
+            )
         distances = results["distances"][0]
         metadatas = results["metadatas"][0]
 

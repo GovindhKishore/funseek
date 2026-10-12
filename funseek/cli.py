@@ -150,8 +150,7 @@ def get_indexes(folder: Path, no_index: bool, include_tests: bool, timings: bool
                 tg1 = time.perf_counter()
 
         except Exception as e:
-            detail = str(e) or type(e).__name__
-            error_console.print(f"[b red]Error:[/b red] Failed to load indexes: {escape(detail)}. Run 'fun reindex <folder>' to rebuild.")
+            error_console.print(f"[b red]Error:[/b red] Failed to load indexes: {escape(str(e) or type(e).__name__)}. Run 'fun reindex <folder>' to rebuild.")
             raise typer.Exit(code=1)
 
 
@@ -202,7 +201,7 @@ def get_indexes(folder: Path, no_index: bool, include_tests: bool, timings: bool
                 ttg1 = time.perf_counter()
 
         except Exception as e:
-            error_console.print(f"[b red]Error:[/b red] Failed to build indexes: {escape(str(e))}")
+            error_console.print(f"[b red]Error:[/b red] Failed to build indexes: {escape(str(e) or type(e).__name__)}")
             raise typer.Exit(code=1)
 
 
@@ -229,7 +228,7 @@ def search_helper(bm25_retriever: "BM25Retriever",
         vector_results = vector_retriever.search(query)
         tvs1 = time.perf_counter()
     except Exception as e:
-        error_console.print(f"[bold yellow]Warning: [/bold yellow]Vector search failed ({escape(str(e))}), continuing with keyword + structural search only.")
+        error_console.print(f"[bold yellow]Warning: [/bold yellow]Vector search failed ({escape(str(e) or type(e).__name__)}), continuing with keyword + structural search only.")
         vector_results = []
 
     seeds = bm25_results[:10] + vector_results[:10]
@@ -353,7 +352,7 @@ def index(folder: Path, timings: bool = False, include_tests: bool = False):
         bm25_index.save(BM25_DIR / f"{project_hash}.pkl")
         graph_index.save(GRAPH_DIR / f"{project_hash}.pkl")
     except Exception as e:
-        error_console.print(f"[b red]Error: [/b red]Failed to build indexes: {escape(str(e))}")
+        error_console.print(f"[b red]Error: [/b red]Failed to build indexes: {escape(str(e) or type(e).__name__)}")
         raise typer.Exit(code=1)
 
     file_mtimes = get_file_mtimes(folder, include_tests)
@@ -417,7 +416,7 @@ def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
         (BM25_DIR / f"{project_hash}.pkl").unlink(missing_ok=True)
         (GRAPH_DIR / f"{project_hash}.pkl").unlink(missing_ok=True)
     except Exception as e:
-        error_console.print(f"[b red]Error: [/b red]Could not clear the old index: {escape(str(e))}")
+        error_console.print(f"[b red]Error: [/b red]Could not clear the old index: {escape(str(e) or type(e).__name__)}")
         raise typer.Exit(code=1)
 
     try:
@@ -453,7 +452,7 @@ def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
         bm25_index.save(BM25_DIR / f"{project_hash}.pkl")
         graph_index.save(GRAPH_DIR / f"{project_hash}.pkl")
     except Exception as e:
-        error_console.print(f"[b red]Error: [/b red]Failed to rebuild indexes: {escape(str(e))}")
+        error_console.print(f"[b red]Error: [/b red]Failed to rebuild indexes: {escape(str(e) or type(e).__name__)}")
         raise typer.Exit(code=1)
 
     file_mtimes = get_file_mtimes(folder, include_tests)
@@ -607,7 +606,7 @@ def clear(folder: Path | None = None, all_items: bool = False):
             (GRAPH_DIR / f"{project_hash}.pkl").unlink(missing_ok=True)
         except Exception as e:
             error_console.print(
-                f"[b red]Error: [/b red]Could not fully clear {escape(str(folder))}: {escape(str(e))}."
+                f"[b red]Error: [/b red]Could not fully clear {escape(str(folder))}: {escape(str(e) or type(e).__name__)}."
             )
             raise typer.Exit(code=1)
 
