@@ -5,8 +5,10 @@ build-backend = "hatchling.build"
 [project]
 name = "funseek"
 version = "0.1.0"
-description = "Hybrid lexical + semantic + structural code search CLI"
+description = "Find the Python function that does X, without knowing its name or where it resides."
 requires-python = ">=3.10"
+license = "MIT"
+readme = "README.md"
 dependencies = [
     "chromadb>=1.5.9",
     "google-genai>=2.29.0",
@@ -17,6 +19,11 @@ dependencies = [
     "sentence-transformers>=6.1.0",
     "typer>=0.27.3",
 ]
+
+[project.urls]
+Homepage = "https://github.com/GovindhKishore/funseek"
+Source = "https://github.com/GovindhKishore/funseek"
+Tracker = "https://github.com/GovindhKishore/funseek/issues"
 
 [project.scripts]
 fun = "funseek.cli:app"

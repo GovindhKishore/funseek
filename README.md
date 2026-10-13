@@ -1,6 +1,6 @@
 # funseek
 
-**Find the Python function that does X, without knowing its name or where it lives.**
+**Find the Python function that does X, without knowing its name or where it resides.**
 
 `funseek` is a command-line search engine for Python Repos. Point it at a folder, then describe what you are looking for in plain English. It combines keyword search, semantic search and call-graph function neighbours, and can optionally rerank the top results with an LLM that explains each match in one sentence.
 
@@ -16,9 +16,9 @@ Warning: No provider specified. Skipping reranking, showing fused results.
 
 Results for: "combines the diffreneet retrived resulste form multiple retriver into one list"
 
-1. fuse  C:/Users/govin/PycharmProjects/funseek/funseek/pipeline/fusion.py:12
+1. fuse  C:/Demo/funseek/funseek/pipeline/fusion.py:12
 
-2. _accumulate_scores  C:/Users/govin/PycharmProjects/funseek/funseek/pipeline/fusion.py:32
+2. _accumulate_scores  C:/Demo/funseek/funseek/pipeline/fusion.py:32
 .
 .
 ```
