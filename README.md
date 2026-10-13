@@ -38,7 +38,7 @@ Both `funseek` and the shorter `fun` invoke the same program.
 5. [How it works and the Math](#how-it-works-and-the-math)
 6. [Evaluation](#evaluation)
 7. [Tuning guide](#tuning-guide)
-8. [Behaviour worth knowing](#notes-and-behaviour-worth-knowing)
+8. [Behavior worth knowing](#behavior-worth-knowing)
 9. [Limitations](#limitations)
 10. [Project layout](#project-layout)
 
@@ -332,7 +332,7 @@ Hop decay alone and the degree penalty did not help. Jaccard overlap gave a smal
 
 ---
 
-## Behaviour worth knowing
+## Behavior worth knowing
 
 - **Tests are excluded by default.** Directories named `test` or `tests`, and files named `test_*.py` or `*_test.py`, are skipped. Use `--include-tests` on `index` or `reindex` to include them. Changing the setting for an existing index requires `reindex`.
 - **Stale indexes.** `search` compares file modification times with those recorded at index time. If they differ, it asks whether to proceed.
