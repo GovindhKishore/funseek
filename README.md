@@ -2,7 +2,7 @@
 
 **Find the Python function that does X, without knowing its name or where it resides.**
 
-`funseek` is a command-line search engine for Python Repos. Point it at a folder, then describe what you are looking for in plain English. It combines keyword search, semantic search and call-graph function neighbours, and can optionally rerank the top results with an LLM that explains each match in one sentence.
+`funseek` is a command-line search engine for Python repos. Point it at a folder, then describe what you are looking for in plain English. It combines keyword search, semantic search and call-graph function neighbours, and can optionally rerank the top results with an LLM that explains each match in one sentence.
 
 Everything runs locally by default. Nothing leaves your machine unless you choose a cloud reranker.
 
@@ -48,14 +48,14 @@ Both `funseek` and the shorter `fun` invoke the same program.
 
 When you join a project, or work inside an unfamiliar module, the hard question is rarely "what does this function do?". It is "where is the code that does X?".
 
-| Tool | Where it lacks eficacy                                                     |
-|---|----------------------------------------------------------------------------|
-| `grep` / IDE search | Needs the exact name or a keyword that appears in the code.                |
-| Pure keyword search (BM25) | Misses paraphrases: "make each row unit length" will not match "normalize". |
-| Pure embedding search | Understands meaning but can miss exact identifiers and rare terms.         |
-| AI-native IDEs / assistants | Strong at generating and editing code, but usually cloud-hosted and account-based, so your code leaves the machine. Their retrieval is largely opaque, and you cannot tune its weighting.                              |
+| Tool | Where it lacks eficacy                                                                                                                                       |
+|---|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `grep` / IDE search | Needs the exact name or a keyword that appears in the code.                                                                                                  |
+| Pure keyword search (BM25) | Misses paraphrases: "make each row unit length" will not match "normalize".                                                                                  |
+| Pure embedding search | Understands meaning but can miss exact identifiers and rare terms.                                                                                           |
+| AI-native IDEs / assistants | Strong at generating and editing code, but usually cloud-hosted and account-based, so your code leaves the machine. You cannot tune their retrieval ranking. |
 
-`funseek` fuses three signals so that each covers the others' blind spots, and returns results at **function level**: name, file and line, ready to jump to.
+`funseek` fuses three signals so that each covers other's gaps, and returns results at **function level**: name, file and line, ready to jump to.
 
 ---
 
@@ -80,7 +80,7 @@ Requires Python 3.10 or newer.
 
 - The first run of `index` or `search` imports the `sentence-transformers` library and downloads the `all-MiniLM-L6-v2` model weights to build or load the index. This initial setup takes a moment.
 - If you need higher priority and higher rate-limited downloads, set a free token: `HF_TOKEN=<your token>`.
-- Indexes are stored under `~/.funseek`.
+- Indexes are stored in `.funseek` in your home folder.
 
 ---
 
@@ -145,21 +145,21 @@ Interactive natural-language search over an indexed folder.
 funseek search FOLDER [OPTIONS]
 ```
 
-| Option | Default  | Description                                                                                                                                                                                |
-|---|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `FOLDER` | required | Folder to search. Must have been indexed, unless `--no-index` is used.                                                                                                                     |
-| `--no-index` | false    | Build the indexes in memory for this session only. Nothing is written to `~/.funseek`.                                                                                                     |
-| `--bm25-weight` | 0.9      | Weight of the bm25 retriever in fusion.                                                                                                                                                    |
-| `--vector-weight` | 1.0      | Weight of the vector retriever in fusion.                                                                                                                                                  |
-| `--structural-weight` | 0.3      | Weight of the call-graph retriever in fusion.                                                                                                                                              |
+| Option | Default  | Description                                                                                                                                                                              |
+|---|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `FOLDER` | required | Folder to search. Must have been indexed, unless `--no-index` is used.                                                                                                                   |
+| `--no-index` | false    | Build the indexes in memory for this session only. Nothing is written to `.funseek`.                                                                                                     |
+| `--bm25-weight` | 0.9      | Weight of the bm25 retriever in fusion.                                                                                                                                                  |
+| `--vector-weight` | 1.0      | Weight of the vector retriever in fusion.                                                                                                                                                |
+| `--structural-weight` | 0.3      | Weight of the call-graph retriever in fusion.                                                                                                                                            |
 | `--max-hop` | 1        | Controls how deep to traverse caller and callee function relationships from seed results. 1 inspects direct callers/callees, while 2 expands to 2nd-degree functional neighbors and so on. |
-| `--decay-factor` | 0.5      | Per-hop decay in graph scoring.                                                                                                                                                            |
-| `--provider` | none     | Reranker: `gemini` or `ollama`. Without it, fused results are shown.                                                                                                                       |
-| `--model` | none     | Model name for the reranker. If default(None) is used, default model name is chosen from given provider class, if povider is given.                                                        |
-| `--top-n` | 10       | Number of results shown.                                                                                                                                                                   |
-| `--num-rerank-candids` | 20       | Number of fused candidates sent to the reranker.                                                                                                                                           
-| `--timings` | false    | Print per-step timings.                                                                                                                                                                    |
-| `--include-tests` | false    | Only used with `--no-index`. For an indexed folder, the setting chosen at index time applies.                                                                                              |
+| `--decay-factor` | 0.5      | Per-hop decay in graph scoring.                                                                                                                                                          |
+| `--provider` | none     | Reranker: `gemini` or `ollama`. Without it, fused results are shown.                                                                                                                     |
+| `--model` | none     | Model name for the reranker. If default(None) is used, default model name is chosen from given provider class, if povider is given.                                                      |
+| `--top-n` | 10       | Number of results shown.                                                                                                                                                                 |
+| `--num-rerank-candids` | 20       | Number of fused candidates sent to the reranker.                                                                                                                                         
+| `--timings` | false    | Print per-step timings.                                                                                                                                                                  |
+| `--include-tests` | false    | Only used with `--no-index`. For an indexed folder, the setting chosen at index time applies.                                                                                            |
 
 If files changed since the last index, `search` warns you and asks whether to continue with the existing index.
 
@@ -216,7 +216,7 @@ $$
 \text{score}(n) = \sum_{s \in S(n)} \frac{\gamma^{\,d(s,n)}}{\text{rank}(s)}
 $$
 
-where $S(n)$ is the set of seeds that reach node $n$, $d(s,n)$ is the number of hops to reach the node $n$ from seed $s$, $\gamma$ is the decay factor (default $0.5$), and $\text{rank}(s)$ is the seed's rank in the retriever that produced it. Seeds themselves are excluded from the structural list, so the graph only adds new candidates. The top 10 structural results are passed to fusion.
+where $S(n)$ is the set of seeds that reach node $n$, $d(s,n)$ is the number of hops to reach the node $n$ from seed $s$, $\gamma$ is the decay factor (default $0.5$), and $\text{rank}(s)$ is the seed's rank in the retriever that produced it. If a seed function appears in both the BM25 and vector lists, its better (lower) rank is used. Seeds themselves are excluded from the structural list, so the graph only adds new candidates. The top 10 structural results are passed to fusion.
 
 This retriever exists to fetch functions that neither keyword nor semantic search would find, such as a helper that shares no vocabulary with the query but sits right next to a relevant function.
 
@@ -247,7 +247,7 @@ The reranker is defensive. If the call fails, the response is not valid JSON, or
 | Corpus | scikit-learn: `model_selection`, `preprocessing` and other subpackages (about 1,260 functions)                                                                             |
 | Snapshot | funseek [`64e67a4`](https://github.com/GovindhKishore/funseek/commit/64e67a4); scikit-learn [`c1f21786a8`](https://github.com/scikit-learn/scikit-learn/commit/c1f21786a8) |
 | Tests | Excluded from the index                                                                                                                                                    |
-| Queries | 30 natural-language queries, about a quarter with realistic typos and grammar mistakes.                                                                                    |
+| Queries | 30 natural-language queries, about a quarter with realistic typos and mistakes.                                                                                            |
 | Labels | Graded: **exact** (grade 2) and **related** (grade 1)                                                                                                                      |
 
 Queries describe what a function does. Labels indicate whether the function is directly relevant (grade 2), related (grade 1), or unrelated (grade 0) to the query.
@@ -269,7 +269,7 @@ $$
 \text{DCG@10} = \sum_{i=1}^{10} \frac{g_i}{\log_2(i+1)}
 $$
 
-where $g_i$ is the grade (0, 1 or 2) of the result at position $i$, and IDCG is the DCG of the ideal ordering. Recall@20 is also the ceiling for the reranker, which only sees the top 20 candidates. Precision@5, Recall@k and nDCG@10 are computed per query and then averaged over all queries in Q, in the same way as MRR@5. Reported values are means over the 30 queries.
+where $g_i$ is the grade (0, 1 or 2) of the result at position $i$, and IDCG is the DCG of the ideal ordering. Recall@20 is also the ceiling for the reranker, which only sees the top 20 candidates by default. Precision@5, Recall@k and nDCG@10 are computed per query and then averaged over all queries in Q, in the same way as MRR@5. Reported values are means over the 30 queries.
 
 ### Results
 
@@ -289,6 +289,10 @@ What this shows:
 - Adding the call graph gives the best result on MRR@5, Precision@5, nDCG@10, Recall@10, Recall@15 and Recall@20. Against the same system without the graph, the gain is about +0.063 MRR@5, +0.044 nDCG@10 and +0.05 Recall@20.
 - The structural retriever is weak on its own, as expected, since it can only reach neighbours of seeds. Its value is in fusion.
 
+**Note:** The vector retriever's `min_keep` parameter sets the number of top-ranked results that are always kept, regardless of the similarity threshold. Only results ranked after `MIN_KEEP` are filtered by the threshold. This prevents the semantic retriever from returning an empty list for queries whose best matches are weakly similar.
+
+**Note:** The performance of every retriever depends on the repository, and this is especially true for the graph retriever. The evaluation was run on a test folder containing the scikit-learn subpackages `preprocessing`, `model_selection` and related modules. If a repository has many functions with unique (name, class name) pairs, the call graph will be large and less ambiguous, and structural expansion reaches a broader and more reliable set of related functions. If names and class names are heavily reused, the graph is smaller, and the structural signal contributes less. The reported numbers should therefore be read as results for this corpus, not as a general measure of performance on all Python code.
+
 ### How the graph scoring was chosen
 
 Several scoring schemes were compared on the same query set, each changing one thing at a time. These comparisons were run while the vector retriever's `min_keep` was 10. After they were run, `min_keep` was changed to 3, which performed better, and the final results above use 3.
@@ -302,15 +306,11 @@ Several scoring schemes were compared on the same query set, each changing one t
 | Sum of decay over all reaching seeds                           | 0.576 |
 | **Sum of decay over all reaching seeds, divided by seed rank** | **0.610** |
 
-Hop decay alone and the degree penalty did not help. Jaccard overlap gave a small gain but pulls the graph towards functions that BM25 already finds. Weighting by how many seeds reach a node, and by how highly those seeds ranked, was clearly better. Extending to two hops did not help under a top-10 cap.
-
-**Note:** The vector retriever's `min_keep` parameter sets the number of top-ranked results that are always kept, regardless of the similarity threshold. Only results ranked after `MIN_KEEP` are filtered by the threshold. This prevents the semantic retriever from returning an empty list for queries whose best matches are weakly similar.
-
-**Note:** The performance of every retriever depends on repository, and this is especially true for the graph retriever. The evaluation was run on a test folder containing the scikit-learn subpackages `preprocessing`, `model_selection` and related modules. If a repository has many functions with unique (name, class name) pairs, the call graph will be large and less ambiguous, and structural expansion reaches a broader and more reliable set of related functions. If names and class names are heavily reused, the graph is smaller, and the structural signal contributes less. The reported numbers should therefore be read as results for this corpus, not as a general measure of performance on all Python code.
+Hop decay alone and the degree penalty did not help. Jaccard overlap gave a small gain but pulls the graph towards functions that BM25 already finds. Weighting by how many seeds reach a node, and by how highly those seeds ranked, was clearly better.
 
 ### Caveats
 
-- **Small query set.** 30 queries: one query moves recall by about 0.03, so differences of a few hundredths are within noise.
+- **Small query set.** The evaluation uses 30 queries, so each query shifts the averages noticeably. Differences of a few hundredths between configurations may reflect a single query rather than a real improvement.
 - **In-sample tuning.** Weights were tuned on the same queries that are reported, so the numbers are optimistic.
 - **Incomplete labels.** Unlabelled correct functions count as misses, so absolute scores are lower bounds. Comparisons between configurations are still valid, since all are judged on the same labels.
 - **Corpus-dependent.** **Scale matters.** On the full scikit-learn package (about 11,000 functions including tests) scores are lower for every retriever, because there are many more near-duplicate names. Module-scale search is the intended use case.
@@ -336,10 +336,10 @@ Hop decay alone and the degree penalty did not help. Jaccard overlap gave a smal
 
 - **Tests are excluded by default.** Directories named `test` or `tests`, and files named `test_*.py` or `*_test.py`, are skipped. Use `--include-tests` on `index` or `reindex` to include them. Changing the setting for an existing index requires `reindex`.
 - **Stale indexes.** `search` compares file modification times with those recorded at index time. If they differ, it asks whether to proceed.
-- **`--no-index`** parses and builds in memory, searches, and discards everything. It is useful for one-off searches and writes nothing to disk, but the build takes time on large folders.
+- **`--no-index`** parses and builds in memory, searches, and discards everything. It is useful for onetime searches and writes nothing to disk, but the build takes time on large folders.
 - **Reranker models.** Defaults are `gemini-3.1-flash-lite` and `llama3.2:1b`. Can change using `--model`. A 1B local model may sometimes fail to return valid JSON, in which case the fused results are shown. A larger local model usually reranks better.
 - **Ollama** must be running if using ollama provider for reranking, and the model must be pulled (`ollama pull <model>`).
-- **Registry corruption.** If `~/.funseek/registry.json` is damaged, it is moved aside to a timestamped backup and rebuilt on the next `index` or `reindex`.
+- **Registry corruption.** If `.funseek/registry.json` is damaged, it is moved aside to a timestamped backup and rebuilt on the next `index` or `reindex`.
 - **Clickable paths.** Results print `path:line`. Some IDE terminals (PyCharm, for example) only make paths clickable for projects they have indexed.
 - **Interrupted builds.** If you cancel `index` or `reindex` midway, run `reindex` again to completion to create non-corrupted indexes.
 - **Privacy.** With no `--provider`, or with `ollama`, no code leaves your machine. With `gemini`, the source of the top candidates is sent to Google.
@@ -390,7 +390,7 @@ funseek/
 
 ## Contributing
 
-Issues and pull requests are welcome. Run the evaluation harness before and after any retrieval change, and report the table.
+Issues and pull requests are welcome. For retrieval changes, include the updated evaluation table in your pull request.
 
 ## License
 
