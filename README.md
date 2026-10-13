@@ -25,6 +25,8 @@ Results for: "combines the diffreneet retrived resulste form multiple retriver i
 
 Both `funseek` and the shorter `fun` invoke the same program.
 
+![Demo](https://raw.githubusercontent.com/GovindhKishore/funseek/main/docs/demo-funseek.gif)
+
 ---
 
 ## Contents
