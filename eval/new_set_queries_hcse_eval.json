@@ -1,0 +1,375 @@
+[
+{
+"query": "find the best probability cutoff for a binary classifier using cross validation and keep it for predict",
+"relevant_functions": ["_fit"],
+"relevant_files": ["sklearn-eval-core/model_selection/_classification_threshold.py"],
+"relevant_lines": [704],
+"class_names": ["TunedThresholdClassifierCV"],
+"related_functions": ["_fit_and_score_over_thresholds", "_mean_interpolated_score", "_get_curve_scorer"],
+"related_files": [
+"sklearn-eval-core/model_selection/_classification_threshold.py",
+"sklearn-eval-core/model_selection/_classification_threshold.py",
+"sklearn-eval-core/model_selection/_classification_threshold.py"
+],
+"related_lines": [403, 471, 878],
+"related_class_names": [null, null, "TunedThresholdClassifierCV"]
+},
+{
+"query": "average score curves from different folds onto a common set of thresholds by interpolation",
+"relevant_functions": ["_mean_interpolated_score"],
+"relevant_files": ["sklearn-eval-core/model_selection/_classification_threshold.py"],
+"relevant_lines": [471],
+"class_names": [null],
+"related_functions": ["_fit_and_score_over_thresholds", "_fit"],
+"related_files": [
+"sklearn-eval-core/model_selection/_classification_threshold.py",
+"sklearn-eval-core/model_selection/_classification_threshold.py"
+],
+"related_lines": [403, 704],
+"related_class_names": [null, "TunedThresholdClassifierCV"]
+},
+{
+"query": "shared code that draws the mean line and std shadeing for train and test scores and picks log or linear x-axis",
+"relevant_functions": ["_plot_curve"],
+"relevant_files": ["sklearn-eval-core/model_selection/_plot.py"],
+"relevant_lines": [12],
+"class_names": ["_BaseCurveDisplay"],
+"related_functions": ["plot", "plot"],
+"related_files": [
+"sklearn-eval-core/model_selection/_plot.py",
+"sklearn-eval-core/model_selection/_plot.py"
+],
+"related_lines": [211, 605],
+"related_class_names": ["LearningCurveDisplay", "ValidationCurveDisplay"]
+},
+{
+"query": "get the nth hyperparameter combo from a grid without making the whole list",
+"relevant_functions": ["__getitem__"],
+"relevant_files": ["sklearn-eval-core/model_selection/_search.py"],
+"relevant_lines": [181],
+"class_names": ["ParameterGrid"],
+"related_functions": ["__iter__"],
+"related_files": ["sklearn-eval-core/model_selection/_search.py"],
+"related_lines": [153],
+"related_class_names": ["ParameterGrid"]
+},
+{
+"query": "sample random hyperparameter settings, picking from lists uniformly or drawing from distributions",
+"relevant_functions": ["__iter__"],
+"relevant_files": ["sklearn-eval-core/model_selection/_search.py"],
+"relevant_lines": [315],
+"class_names": ["ParameterSampler"],
+"related_functions": ["_run_search"],
+"related_lines": [2078],
+"related_files": ["sklearn-eval-core/model_selection/_search.py"],
+"related_class_names": ["RandomizedSearchCV"]
+},
+{
+"query": "buid the results table with mean, std and rank of test scores for every candidate",
+"relevant_functions": ["_format_results"],
+"relevant_files": ["sklearn-eval-core/model_selection/_search.py"],
+"relevant_lines": [1209],
+"class_names": ["BaseSearchCV"],
+"related_functions": ["_yield_masked_array_for_each_param", "fit"],
+"related_files": [
+"sklearn-eval-core/model_selection/_search.py",
+"sklearn-eval-core/model_selection/_search.py"
+],
+"related_lines": [393, 962],
+"related_class_names": [null, "BaseSearchCV"]
+},
+{
+"query": "keep only the top k scoring candidates from a given round of halving",
+"relevant_functions": ["_top_k"],
+"relevant_files": ["sklearn-eval-core/model_selection/_search_successive_halving.py"],
+"relevant_lines": [52],
+"class_names": [null],
+"related_functions": ["_run_search"],
+"related_files": ["sklearn-eval-core/model_selection/_search_successive_halving.py"],
+"related_lines": [286],
+"related_class_names": ["BaseSuccessiveHalving"]
+},
+{
+"query": "cv splitter wrapper that randomly shrinks train and test indices of each fold to a fraction",
+"relevant_functions": ["split"],
+"relevant_files": ["sklearn-eval-core/model_selection/_search_successive_halving.py"],
+"relevant_lines": [34],
+"class_names": ["_SubsampleMetaSplitter"],
+"related_functions": ["_run_search"],
+"related_files": ["sklearn-eval-core/model_selection/_search_successive_halving.py"],
+"related_lines": [286],
+"related_class_names": ["BaseSuccessiveHalving"]
+},
+{
+"query": "get predictons for each row from a model that never saw that row",
+"relevant_functions": ["cross_val_predict"],
+"relevant_files": ["sklearn-eval-core/model_selection/_validation.py"],
+"relevant_lines": [1007],
+"class_names": [null],
+"related_functions": ["_fit_and_predict", "_check_is_permutation"],
+"related_files": [
+"sklearn-eval-core/model_selection/_validation.py",
+"sklearn-eval-core/model_selection/_validation.py"
+],
+"related_lines": [1261, 1407],
+"related_class_names": [null, null]
+},
+{
+"query": "fix the column order of per-class outputs when a training fold is missing a class and fill the missing columns with default values",
+"relevant_functions": ["_enforce_prediction_order"],
+"relevant_files": ["sklearn-eval-core/model_selection/_validation.py"],
+"relevant_lines": [1337],
+"class_names": [null],
+"related_functions": ["_fit_and_predict"],
+"related_files": ["sklearn-eval-core/model_selection/_validation.py"],
+"related_lines": [1261],
+"related_class_names": [null]
+},
+{
+"query": "split time ordered data so the test part always comes after the train part, with an optional gap",
+"relevant_functions": ["_split"],
+"relevant_files": ["sklearn-eval-core/model_selection/_split.py"],
+"relevant_lines": [1254],
+"class_names": ["TimeSeriesSplit"],
+"related_functions": ["split"],
+"related_files": ["sklearn-eval-core/model_selection/_split.py"],
+"related_lines": [1224],
+"related_class_names": ["TimeSeriesSplit"]
+},
+{
+"query": "avoid dividing by zero when a column has no spread by setting its scale to 1",
+"relevant_functions": ["_handle_zeros_in_scale"],
+"relevant_files": ["sklearn-eval-core/preprocessing/_data.py"],
+"relevant_lines": [103],
+"class_names": [null],
+"related_functions": ["_is_constant_feature"],
+"related_files": ["sklearn-eval-core/preprocessing/_data.py"],
+"related_lines": [85],
+"related_class_names": [null]
+},
+{
+"query": "scale every column by its biggest absolute value so sparse data stays sparse",
+"relevant_functions": ["maxabs_scale"],
+"relevant_files": ["sklearn-eval-core/preprocessing/_data.py"],
+"relevant_lines": [1422],
+"class_names": [null],
+"related_functions": ["transform", "partial_fit"],
+"related_files": [
+"sklearn-eval-core/preprocessing/_data.py",
+"sklearn-eval-core/preprocessing/_data.py"
+],
+"related_lines": [1330 , 1281],
+"related_class_names": ["MaxAbsScaler", "MaxAbsScaler"]
+},
+{
+"query": "find the best lambda for yeo johnson power transform by maximum likelihood",
+"relevant_functions": ["_yeo_johnson_optimize"],
+"relevant_files": ["sklearn-eval-core/preprocessing/_data.py"],
+"relevant_lines": [3579],
+"class_names": ["PowerTransformer"],
+"related_functions": ["_box_cox_optimize", "_fit"],
+"related_files": [
+"sklearn-eval-core/preprocessing/_data.py",
+"sklearn-eval-core/preprocessing/_data.py"
+],
+"related_lines": [3563, 3398],
+"related_class_names": ["PowerTransformer", "PowerTransformer"]
+},
+{
+"query": "map one feature column to a uniform or normal distribution using the stored quantiles, and also go in reverse",
+"relevant_functions": ["_transform_col"],
+"relevant_files": ["sklearn-eval-core/preprocessing/_data.py"],
+"relevant_lines": [2918],
+"class_names": ["QuantileTransformer"],
+"related_functions": ["_transform"],
+"related_files": ["sklearn-eval-core/preprocessing/_data.py"],
+"related_lines": [3011],
+"related_class_names": ["QuantileTransformer"]
+},
+{
+"query": "bin numeric columns into intervals using equal width, equal count etc",
+"relevant_functions": ["fit"],
+"relevant_files": ["sklearn-eval-core/preprocessing/_discretization.py"],
+"relevant_lines": [233],
+"class_names": ["KBinsDiscretizer"],
+"related_functions": ["_validate_n_bins", "transform"],
+"related_files": [
+"sklearn-eval-core/preprocessing/_discretization.py",
+"sklearn-eval-core/preprocessing/_discretization.py"
+],
+"related_lines": [401, 426],
+"related_class_names": ["KBinsDiscretizer", "KBinsDiscretizer"]
+},
+{
+"query": "figure out which categories are rare based on a min count or a max number of categories",
+"relevant_functions": ["_identify_infrequent"],
+"relevant_files": ["sklearn-eval-core/preprocessing/_encoders.py"],
+"relevant_lines": [290],
+"class_names": ["_BaseEncoder"],
+"related_functions": ["_fit_infrequent_category_mapping", "_map_infrequent_categories"],
+"related_files": [
+"sklearn-eval-core/preprocessing/_encoders.py",
+"sklearn-eval-core/preprocessing/_encoders.py"
+],
+"related_lines": [335, 417],
+"related_class_names": ["_BaseEncoder", "_BaseEncoder"]
+},
+{
+"query": "wich categroy gets dropped for each feature in one hot, the first one or only for binary or a given one",
+"relevant_functions": ["_set_drop_idx"],
+"relevant_files": ["sklearn-eval-core/preprocessing/_encoders.py"],
+"relevant_lines": [803] ,
+"class_names": ["OneHotEncoder"],
+"related_functions": ["_map_drop_idx_to_infrequent"],
+"related_files": ["sklearn-eval-core/preprocessing/_encoders.py"],
+"related_lines": [779],
+"related_class_names": ["OneHotEncoder"]
+},
+{
+"query": "sanity check that applying the function and then its inverse returns the original data, otherwise say its not",
+"relevant_functions": ["_check_inverse_transform"],
+"relevant_files": ["sklearn-eval-core/preprocessing/_function_transformer.py"],
+"relevant_lines": [163],
+"class_names": ["FunctionTransformer"],
+"related_functions": ["fit"],
+"related_files": ["sklearn-eval-core/preprocessing/_function_transformer.py"],
+"related_lines": [195],
+"related_class_names": ["FunctionTransformer"]
+},
+{
+"query": "convert a one vs all score matrix back to labels by picking the highest scoring class in each row",
+"relevant_functions": ["_inverse_binarize_multiclass"],
+"relevant_files": ["sklearn-eval-core/preprocessing/_label.py"],
+"relevant_lines": [697],
+"class_names": [null],
+"related_functions": ["_inverse_binarize_thresholding", "inverse_transform"],
+"related_files": [
+"sklearn-eval-core/preprocessing/_label.py",
+"sklearn-eval-core/preprocessing/_label.py"
+],
+"related_lines": [744, 396],
+"related_class_names": [null, "LabelBinarizer"]
+},
+{
+"query": "encode categories with a shrunk mean of the target using out of fold fitting so there is no leakage",
+"relevant_functions": ["fit_transform"],
+"relevant_files": ["sklearn-eval-core/preprocessing/_target_encoder.py"],
+"relevant_lines": [285],
+"class_names": ["TargetEncoder"],
+"related_functions": ["_fit_encodings_all", "_transform_X_ordinal"],
+"related_files": [
+"sklearn-eval-core/preprocessing/_target_encoder.py",
+"sklearn-eval-core/preprocessing/_target_encoder.py"
+],
+"related_lines": [475, 595],
+"related_class_names": ["TargetEncoder", "TargetEncoder"]
+},
+{
+"query": "how many cols will polynimial expansion make without actualy generating them",
+"relevant_functions": ["_num_combinations"],
+"relevant_files": ["sklearn-eval-core/preprocessing/_polynomial.py"],
+"relevant_lines": [212],
+"class_names": ["PolynomialFeatures"],
+"related_functions": ["_combinations"],
+"related_files": ["sklearn-eval-core/preprocessing/_polynomial.py"],
+"related_lines": [199],
+"related_class_names": ["PolynomialFeatures"]
+},
+{
+"query": "drop features from a fitted dict vectorizer based on a selection mask",
+"relevant_functions": ["restrict"],
+"relevant_files": ["sklearn-eval-core/feature_extraction/_dict_vectorizer.py"],
+"relevant_lines": [397],
+"class_names": ["DictVectorizer"],
+"related_functions": [],
+"related_files": [],
+"related_lines": [],
+"related_class_names": []
+},
+{
+"query": "hashing trick that turns dicts or token lists into a sparse matrix with a fixed number of columns",
+"relevant_functions": ["transform"],
+"relevant_files": ["sklearn-eval-core/feature_extraction/_hash.py"],
+"relevant_lines": [147],
+"class_names": ["FeatureHasher"],
+"related_functions": ["_get_hasher", "transform"],
+"related_files": [
+"sklearn-eval-core/feature_extraction/text.py",
+"sklearn-eval-core/feature_extraction/text.py"
+],
+"related_lines": [908, 858],
+"related_class_names": ["HashingVectorizer", "HashingVectorizer"]
+},
+{
+"query": "get all sliding windows of an n-dimensional array without copying memory by using strides",
+"relevant_functions": ["_extract_patches"],
+"relevant_files": ["sklearn-eval-core/feature_extraction/image.py"],
+"relevant_lines": [294],
+"class_names": [null],
+"related_functions": ["extract_patches_2d"],
+"related_files": ["sklearn-eval-core/feature_extraction/image.py"],
+"related_lines": [366],
+"related_class_names": [null]
+},
+{
+"query": "stich overlaping patches back into the full pictrue and average the overlap",
+"relevant_functions": ["reconstruct_from_patches_2d"],
+"relevant_files": ["sklearn-eval-core/feature_extraction/image.py"],
+"relevant_lines": [468],
+"class_names": [null],
+"related_functions": ["extract_patches_2d"],
+"related_files": ["sklearn-eval-core/feature_extraction/image.py"],
+"related_lines": [366],
+"related_class_names": [null]
+},
+{
+"query": "remove accents from unicode text",
+"relevant_functions": ["strip_accents_unicode"],
+"relevant_files": ["sklearn-eval-core/feature_extraction/text.py"],
+"relevant_lines": [125],
+"class_names": [null],
+"related_functions": ["strip_accents_ascii"],
+"related_files": ["sklearn-eval-core/feature_extraction/text.py"],
+"related_lines": [157],
+"related_class_names": [null]
+},
+{
+"query": "char ngrams that dont cross word boundries and are padded with spaces",
+"relevant_functions": ["_char_wb_ngrams"],
+"relevant_files": ["sklearn-eval-core/feature_extraction/text.py"],
+"relevant_lines": [301],
+"class_names": ["_VectorizerMixin"],
+"related_functions": ["_char_ngrams"],
+"related_files": ["sklearn-eval-core/feature_extraction/text.py"],
+"related_lines": [278],
+"related_class_names": ["_VectorizerMixin"]
+},
+{
+"query": "prune vocabulary terms that appear in too many or too few documents and cap the number of features kept",
+"relevant_functions": ["_limit_features"],
+"relevant_files": ["sklearn-eval-core/feature_extraction/text.py"],
+"relevant_lines": [1209],
+"class_names": ["CountVectorizer"],
+"related_functions": ["_document_frequency", "fit_transform"],
+"related_files": [
+"sklearn-eval-core/feature_extraction/text.py",
+"sklearn-eval-core/feature_extraction/text.py"
+],
+"related_lines": [924, 1333],
+"related_class_names": [null, "CountVectorizer"]
+},
+{
+"query": "compute inverse document frequency weights with optional smoothing using term counts",
+"relevant_functions": ["fit"],
+"relevant_files": ["sklearn-eval-core/feature_extraction/text.py"],
+"relevant_lines": [1640],
+"class_names": ["TfidfTransformer"],
+"related_functions": ["_document_frequency", "fit"],
+"related_files": [
+"sklearn-eval-core/feature_extraction/text.py",
+"sklearn-eval-core/feature_extraction/text.py"
+],
+"related_lines": [924, 2040],
+"related_class_names": [null, "TfidfVectorizer"]
+}
+]

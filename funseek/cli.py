@@ -253,6 +253,7 @@ def search_helper(bm25_retriever: "BM25Retriever",
 
 def rerank_results(query: str, candidates: list[ScoredFunction], reranker: Reranker, skip_reason: str, top_n: int, timings: bool) -> list[ScoredFunction]:
     if reranker is None:
+        console.print()
         error_console.print(f"[bold yellow]Warning: [/bold yellow]{skip_reason} Skipping reranking, showing fused results.")
         return candidates[:top_n]
 
