@@ -10,15 +10,15 @@ Everything runs locally by default. Nothing leaves your machine unless you choos
 ```text
 $ funseek search .
 
-Query: combines the diffreneet retrived resulste form multiple retriver into one list
+Query: combine scores from several retrievers
 
 Warning: No provider specified. Skipping reranking, showing fused results.
 
-Results for: "combines the diffreneet retrived resulste form multiple retriver into one list"
+Results for: "combine scores from several retrievers"
 
-1. fuse  C:/Demo/funseek/funseek/pipeline/fusion.py:12
+1. _accumulate_scores  C:/Demo/funseek/funseek/pipeline/fusion.py:32
 
-2. _accumulate_scores  C:/Demo/funseek/funseek/pipeline/fusion.py:32
+2. fuse  C:/Demo/funseek/funseek/pipeline/fusion.py:12
 .
 .
 ```
@@ -244,7 +244,7 @@ The reranker is defensive. If the call fails, the response is not valid JSON, or
 
 | Item | Value                                                                                                                                                                      |
 |---|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Corpus | scikit-learn: `model_selection`, `preprocessing`, `feature_extraction` (about 1,260 functions)                                                                             |
+| Corpus | scikit-learn: `model_selection`, `preprocessing` and other subpackages (about 1,260 functions)                                                                             |
 | Snapshot | funseek [`64e67a4`](https://github.com/GovindhKishore/funseek/commit/64e67a4); scikit-learn [`c1f21786a8`](https://github.com/scikit-learn/scikit-learn/commit/c1f21786a8) |
 | Tests | Excluded from the index                                                                                                                                                    |
 | Queries | 30 natural-language queries, about a quarter with realistic typos and grammar mistakes.                                                                                    |
@@ -394,4 +394,4 @@ Issues and pull requests are welcome. Run the evaluation harness before and afte
 
 ## License
 
-MIT. See `LICENSE`.
+This project is licensed under the MIT License.
