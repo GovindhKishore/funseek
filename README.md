@@ -2,7 +2,7 @@
 
 **Find the Python function that does X, without knowing its name or where it resides.**
 
-`funseek` is a command-line search engine for Python repos. Point it at a folder, then describe what you are looking for in plain English. It combines keyword search, semantic search, and call-graph function neighbours, and can optionally rerank the top results with an LLM that explains each match in one sentence.
+`funseek` is a command-line search engine for Python repos. Point it at a folder, then describe what you are looking for in plain English. It combines keyword search, semantic search, and call-graph function neighbors, and can optionally rerank the top results with an LLM that explains each match in one sentence.
 
 Everything runs locally by default. Nothing leaves your machine unless you choose a cloud reranker.
 
@@ -172,7 +172,7 @@ funseek search FOLDER [OPTIONS]
 | `--max-hop`            | 1        | Controls how deep to traverse caller and callee function relationships from seed results. 1 inspects direct callers/callees, while 2 expands to 2nd-degree functional neighbors and so on. |
 | `--decay-factor`       | 0.5      | Per-hop decay in graph scoring.                                                                                                                                                            |
 | `--provider`           | none     | Reranker: `gemini` or `ollama`. Without it, fused results are shown.                                                                                                                       |
-| `--model`              | none     | Model name for the reranker. If default(None) is used, default model name is chosen from given provider class, if povider is given.                                                        |
+| `--model`              | none     | Model name for the reranker. If omitted, the provider’s default model is used from provider's class                                                                                        |
 | `--top-n`              | 10       | Number of results shown.                                                                                                                                                                   |
 | `--num-rerank-candids` | 20       | Number of fused candidates sent to the reranker.                                                                                                                                           |
 | `--timings`            | false    | Print per-step timings.                                                                                                                                                                    |
@@ -212,7 +212,7 @@ Keys are kept in your operating system's credential store (Windows Credential Ma
 
 ### 1. Parsing
 
-`funseek` parses every `.py` file with Python's `ast` module and extracts each function and method: name, enclosing class, file, line, docstring, parameters, return type and the function names with class names (if detectable) it calls. Each function becomes a normalised text document used by the keyword and semantic indexes. Files that cannot be parsed are skipped and counted in a warning.
+`funseek` parses every `.py` file with Python's `ast` module and extracts each function and method: name, enclosing class, file, line, docstring, parameters, return type and the function names with class names (if detectable) it calls. Each function becomes a normalized text document used by the keyword and semantic indexes. Files that cannot be parsed are skipped and counted in a warning.
 
 ### 2. Three retrievers
 
@@ -233,7 +233,7 @@ $$
 \text{score}(n) = \sum_{s \in S(n)} \frac{\gamma^{\,d(s,n)}}{\text{rank}(s)}
 $$
 
-where $S(n)$ is the set of seeds that reach node $n$, $d(s,n)$ is the number of hops to reach the node $n$ from seed $s$, $\gamma$ is the decay factor (default $0.5$), and $\text{rank}(s)$ is the seed's rank in the retriever that produced it. If a seed function appears in both the BM25 and vector lists, its better (lower) rank is used. Seeds themselves are excluded from the structural list, so the graph only adds new candidates. The top 10 structural results are passed to fusion.
+Where $S(n)$ is the set of seeds that reach node $n$, $d(s,n)$ is the number of hops to reach the node $n$ from seed $s$, $\gamma$ is the decay factor (default $0.5$), and $\text{rank}(s)$ is the seed's rank in the retriever that produced it. If a seed function appears in both the BM25 and vector lists, its better (lower) rank is used. Seeds themselves are excluded from the structural list, so the graph only adds new candidates. The top 10 structural results are passed to fusion.
 
 This retriever exists to fetch functions that neither keyword nor semantic search would find, such as a helper that shares no vocabulary with the query but sits right next to a relevant function.
 
@@ -304,7 +304,7 @@ What this shows:
 
 - Fusing keyword and semantic search improves on semantic search alone on MRR@5 (0.5389 vs 0.5122), Recall@15, and Recall@20, while nDCG@10 is roughly equal (0.5575 vs 0.5460).
 - Adding the call graph gives the best result on MRR@5, Precision@5, nDCG@10, Recall@10, Recall@15, and Recall@20. Against the same system without the graph, the gain is about +0.063 MRR@5, +0.044 nDCG@10, and +0.05 Recall@20.
-- The structural retriever is weak on its own, as expected, since it can only reach neighbours of seeds. Its value is in fusion.
+- The structural retriever is weak on its own, as expected, since it can only reach neighbors of seeds. Its value is in fusion.
 
 **Note:** The vector retriever's `min_keep` parameter sets the number of top-ranked results that are always kept, regardless of the similarity threshold. Only results ranked after `MIN_KEEP` are filtered by the threshold. This prevents the semantic retriever from returning an empty list for queries whose best matches are weakly similar.
 
@@ -353,7 +353,7 @@ Hop decay alone and the degree penalty did not help. Jaccard overlap gave a smal
 
 - **Tests are excluded by default.** Directories named `test` or `tests`, and files named `test_*.py` or `*_test.py`, are skipped. Use `--include-tests` on `index` or `reindex` to include them. Changing the setting for an existing index requires `reindex`.
 - **Stale indexes.** `search` compares file modification times with those recorded at index time. If they differ, it asks whether to proceed.
-- **`--no-index`** parses and builds in memory, searches, and discards everything. It is useful for onetime searches and writes nothing to disk, but the build takes time on large folders.
+- **`--no-index`** parses and builds in memory, searches, and discards everything. It is useful for one-time searches and writes nothing to disk, but the build takes time on large folders.
 - **Reranker models.** Defaults are `gemini-3.1-flash-lite` and `llama3.2:1b`. Can change using `--model`. A 1B local model may sometimes fail to return valid JSON, in which case the fused results are shown. A larger local model usually reranks better.
 - **Ollama** must be running if using ollama provider for reranking, and the model must be pulled (`ollama pull <model>`).
 - **Registry corruption.** If `.funseek/registry.json` is damaged, it is moved aside to a timestamped backup and rebuilt on the next `index` or `reindex`.
