@@ -62,6 +62,7 @@ def safe_load_registry_index_cmds() -> dict:
                 f"[bold yellow]Warning: [/bold yellow]Registry was corrupted. Moved to {escape(backup.as_posix())}."
                 f" Starting fresh Registry"
             )
+            console.print()
             return {}
         except OSError:
             error_console.print(f"[bold yellow]Warning: [/bold yellow]Registry is corrupted and could not be backed up")
@@ -170,6 +171,7 @@ def get_indexes(folder: Path, no_index: bool, include_tests: bool, timings: bool
                 f"that could not be parsed (for example syntax errors, unsupported encoding, unreadable files, or very deeply nested code). "
                 f"Functions in them will not be searchable."
             )
+            console.print()
 
         if not functions:
             error_console.print(f"[bold yellow]Warning: [/bold yellow]No functions found in {escape(str(folder))}. Nothing to index.")
@@ -238,7 +240,6 @@ def search_helper(bm25_retriever: "BM25Retriever",
     tgs1 = time.perf_counter()
 
     if timings:
-        console.print()
         console.print(f"[dim]BM25 search took [cyan]{tbs1 - tbs0:.2f}[/cyan] seconds.[/dim]")
         if tvs1 != 0.0:
             console.print(f"[dim]Vector search took [cyan]{tvs1 - tvs0:.2f}[/cyan] seconds.[/dim]")
@@ -253,8 +254,8 @@ def search_helper(bm25_retriever: "BM25Retriever",
 
 def rerank_results(query: str, candidates: list[ScoredFunction], reranker: Reranker, skip_reason: str, top_n: int, timings: bool) -> list[ScoredFunction]:
     if reranker is None:
-        console.print()
         error_console.print(f"[bold yellow]Warning: [/bold yellow]{skip_reason} Skipping reranking, showing fused results.")
+        console.print()
         return candidates[:top_n]
 
     tr0 = time.perf_counter()
@@ -311,11 +312,9 @@ def index(folder: Path, timings: bool = False, include_tests: bool = False):
         )
 
     if not functions:
-        console.print()
         error_console.print(f"[bold yellow]Warning: [/bold yellow]No functions found in {escape(str(folder))}. Nothing to index.")
         raise typer.Exit(code=1)
 
-    console.print()
     console.print(f"Parsed [cyan]{len(functions)}[/cyan] functions")
     if timings:
         console.print(f"[dim]Parsing took [cyan]{tp1 - tp0:.2f}[/cyan] seconds.[/dim]")
@@ -401,11 +400,9 @@ def reindex(folder: Path, timings: bool = False, include_tests: bool = False):
         )
 
     if not functions:
-        console.print()
         error_console.print(f"[bold yellow]Warning: [/bold yellow]No functions found in {escape(str(folder))}. Nothing to index.")
         raise typer.Exit(code=1)
 
-    console.print()
     console.print(f"Parsed [cyan]{len(functions)}[/cyan] functions")
     if timings:
         console.print(f"[dim]Parsing took [cyan]{tp1 - tp0:.2f}[/cyan] seconds.[/dim]")
@@ -543,6 +540,7 @@ def search(
     while True:
         try:
             query = typer.prompt("Query").strip()
+            console.print()
         except typer.Abort:
             break
         if query.lower() in {"exit", "quit"}:
@@ -597,7 +595,6 @@ def clear(folder: Path | None = None, all_items: bool = False):
         error_console.print(f"[b yellow]Warning: [/b yellow]{escape(str(folder))} is not indexed. Nothing to clear.")
         raise typer.Exit(code=0)
 
-    console.print()
     with console.status("Clearing...", spinner="arc"):
         from funseek.indexing.vector_index import VectorIndex
 
