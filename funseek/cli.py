@@ -124,6 +124,7 @@ def get_indexes(folder: Path, no_index: bool, include_tests: bool, timings: bool
             error_console.print(f"[bold yellow]Warning: [/bold yellow]Files in {escape(str(folder))} have changed since last index.")
             proceed = typer.confirm("Search anyway with the existing index?", default=True)
             if not proceed:
+                console.print()
                 console.print(f"Run 'fun reindex {escape(str(folder))}' to update.")
                 raise typer.Exit(code=0)
 
@@ -177,7 +178,6 @@ def get_indexes(folder: Path, no_index: bool, include_tests: bool, timings: bool
             error_console.print(f"[bold yellow]Warning: [/bold yellow]No functions found in {escape(str(folder))}. Nothing to index.")
             raise typer.Exit(code=1)
 
-        console.print()
         console.print(f"Parsed [cyan]{len(functions)}[/cyan] functions")
         if timings:
             console.print(f"[dim]Parsing took [cyan]{tp1 - tp0:.2f}[/cyan] seconds.[/dim]")
@@ -269,7 +269,7 @@ def rerank_results(query: str, candidates: list[ScoredFunction], reranker: Reran
 
 
 def print_results(query: str, final_results: list[ScoredFunction]) -> None:
-    console.print(f"\nResults for: \"{escape(str(query))}\"\n")
+    console.print(f"Results for: \"{escape(str(query))}\"\n")
     for i, result in enumerate(final_results, start=1):
         func = result.function
         console.print(f"[cyan]{i}[/cyan]. [b white]{func.name}[/b white]  [bright_blue]{escape(func.file.as_posix())}:{func.line}[/bright_blue]")
@@ -310,6 +310,7 @@ def index(folder: Path, timings: bool = False, include_tests: bool = False):
             f"that could not be parsed (for example syntax errors, unsupported encoding, unreadable files, or very deeply nested code). "
             f"Functions in them will not be searchable."
         )
+        console.print()
 
     if not functions:
         error_console.print(f"[bold yellow]Warning: [/bold yellow]No functions found in {escape(str(folder))}. Nothing to index.")

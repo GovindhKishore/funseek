@@ -22,5 +22,5 @@ class OllamaProvider(BaseProvider):
 
 
         except Exception as e:
-            print(f"Error {e}: \n\nSkipping reranking, showing fused results.")
+            print(f"Error {e}: \n\nSkipping reranking, showing fused results.\n")
             return None

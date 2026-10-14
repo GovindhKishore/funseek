@@ -22,5 +22,5 @@ class GeminiProvider(BaseProvider):
             return response.text if response.text else None
 
         except Exception as e:
-            print(f"Error {e}: \n\nSkipping reranking, showing fused results.")
+            print(f"Error {e}: \n\nSkipping reranking, showing fused results.\n")
             return None
