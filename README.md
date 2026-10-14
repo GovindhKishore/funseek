@@ -52,7 +52,7 @@ When you join a project or work inside an unfamiliar module, the hard question i
 |-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `grep` / IDE search         | Needs the exact function name or a keyword that appears in the code.                                                                                         |
 | Pure keyword search (BM25)  | Misses paraphrases: "make each row unit length" will not match "normalize".                                                                                  |
-| Pure embedding search       | Understands meaning but can miss exact andd rare terms.                                                                                                      |
+| Pure embedding search       | Understands meaning but can miss exact and rare terms.                                                                                                       |
 | AI-native IDEs / assistants | Strong at generating and editing code, but usually cloud-hosted and account-based, so your code leaves the machine. You cannot tune their retrieval ranking. |
 
 `funseek` fuses three signals so that each covers other's gaps, and returns results at **function level**: name, file, and line, ready to jump to.
